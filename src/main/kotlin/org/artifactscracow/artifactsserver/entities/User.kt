@@ -1,5 +1,6 @@
 package org.artifactscracow.artifactsserver.entities
 
+import org.hibernate.annotations.Type
 import java.util.*
 import javax.persistence.*
 
@@ -9,11 +10,15 @@ class User {
 
     @Id
     @GeneratedValue
-    private val id: UUID? = null
+    lateinit var id: UUID
 
-    var email: String? = null
+    var email: String = ""
 
-    var passwordHashed: String? = null
+    var name: String = ""
+
+    var passwordHashed: String = ""
+
+    var loginToken: UUID = UUID.randomUUID()
 
     @ManyToOne()
     lateinit var role: UserRole
