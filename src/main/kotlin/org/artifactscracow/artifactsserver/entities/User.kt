@@ -1,10 +1,7 @@
 package org.artifactscracow.artifactsserver.entities
 
 import java.util.*
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity(name = "User")
 @Table(name = "users")
@@ -18,5 +15,6 @@ class User {
 
     var passwordHashed: String? = null
 
-
+    @ManyToOne()
+    lateinit var role: UserRole
 }
