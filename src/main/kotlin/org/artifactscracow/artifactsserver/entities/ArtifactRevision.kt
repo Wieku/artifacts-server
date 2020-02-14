@@ -2,6 +2,7 @@ package org.artifactscracow.artifactsserver.entities
 
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
+import java.util.*
 import javax.persistence.*
 
 @Entity(name = "ArtifactRevision")
@@ -9,16 +10,8 @@ import javax.persistence.*
 class ArtifactRevision {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true)
-    var id: Int = 0
-        private set
-
-    private var revisionNumber = 0
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "artifact_id")
-    private var artifact: Artifact? = null
+    @GeneratedValue
+    private lateinit var id: UUID
 
     @CreationTimestamp
     var creationDate: LocalDateTime? = null

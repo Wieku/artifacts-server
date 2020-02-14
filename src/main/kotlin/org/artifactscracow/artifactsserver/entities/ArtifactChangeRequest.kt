@@ -6,24 +6,23 @@ import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 
-@Entity(name = "Artifact")
-@Table(name = "artifacts")
+@Entity(name = "ArtifactChangeRequest")
+@Table(name = "change_requests")
 @EntityListeners(AuditingEntityListener::class)
-class Artifact {
+class ArtifactChangeRequest() {
 
     @Id
     @GeneratedValue
     private lateinit var id: UUID
 
-    val latitude: Double = 0.0
-    val longitude: Double = 0.0
-
     @CreationTimestamp
-    val timestamp: LocalDateTime? = null
+    var creationDate: LocalDateTime? = null
+        private set
 
     @OneToOne
-    val content: ArtifactRevision? = null
+    lateinit var artifact: Artifact
 
-    val lastEdit: LocalDateTime? = null
+    @OneToOne
+    lateinit var revision: ArtifactRevision
 
 }
