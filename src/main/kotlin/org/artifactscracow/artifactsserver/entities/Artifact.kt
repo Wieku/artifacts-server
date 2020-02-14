@@ -13,16 +13,16 @@ class Artifact {
 
     @Id
     @GeneratedValue
-    private lateinit var id: UUID
+    lateinit var id: UUID
 
-    val latitude: Double = 0.0
-    val longitude: Double = 0.0
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
 
     @CreationTimestamp
-    val timestamp: LocalDateTime? = null
+    lateinit var timestamp: LocalDateTime
 
-    @OneToOne
-    val content: ArtifactRevision? = null
+    @OneToOne(cascade= [CascadeType.ALL])
+    var content: ArtifactRevision? = null
 
     val lastEdit: LocalDateTime? = null
 

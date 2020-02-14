@@ -11,6 +11,11 @@ import javax.persistence.*
 @EntityListeners(AuditingEntityListener::class)
 class ArtifactChangeRequest() {
 
+    constructor(artifact: Artifact, revision: ArtifactRevision): this() {
+        this.artifact = artifact
+        this.revision = revision
+    }
+
     @Id
     @GeneratedValue
     private lateinit var id: UUID
@@ -19,10 +24,10 @@ class ArtifactChangeRequest() {
     var creationDate: LocalDateTime? = null
         private set
 
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.ALL])
     lateinit var artifact: Artifact
 
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.ALL])
     lateinit var revision: ArtifactRevision
 
 }

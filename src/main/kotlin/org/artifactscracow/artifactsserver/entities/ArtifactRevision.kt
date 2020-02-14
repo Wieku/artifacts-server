@@ -17,10 +17,10 @@ class ArtifactRevision {
     var creationDate: LocalDateTime? = null
         private set
 
-    var street: String? = null
-    var building: String? = null
+    var street: String = ""
+    var building: String = ""
 
-    var type: String? = null
-    var description: String? = null
+    var type: String = ""
+    var description: String = ""
 
 }
