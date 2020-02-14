@@ -7,9 +7,12 @@ import java.util.*
 
 object JWTHelper {
 
-    fun extractToken(tokenEncoded: String): User? {
+    fun extractToken(token: String): User? {
+        if (!token.startsWith("Bearer ")) return null
+        val token1 = token.substringAfter("Bearer ")
+
         return try {
-            val claims = Jwts.parser().setSigningKey(JWTSecret).parseClaimsJws(tokenEncoded)
+            val claims = Jwts.parser().setSigningKey(JWTSecret).parseClaimsJws(token1)
 
             val user = User()
             user.email = claims.body.subject
@@ -27,7 +30,7 @@ object JWTHelper {
         claims["userId"] = user.id.toString()
         claims["token"] = user.loginToken
 
-        return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS256, JWTSecret).compact()
+        return "Bearer " + Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS256, JWTSecret).compact()
     }
 
 }
