@@ -1,10 +1,12 @@
 package org.artifactscracow.artifactsserver.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.Type
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
+import kotlin.jvm.Transient
 
 
 @Entity(name = "ArtifactPhoto")
@@ -13,10 +15,12 @@ class ArtifactPhoto {
 
     @Id
     @GeneratedValue
-    lateinit var id: UUID
+    @JsonIgnore
+    private lateinit var id: UUID
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "artifact_id")
+    @JsonIgnore
     lateinit var artifact: Artifact
 
     @CreationTimestamp

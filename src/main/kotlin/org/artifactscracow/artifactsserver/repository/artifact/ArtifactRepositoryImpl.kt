@@ -74,6 +74,7 @@ open class ArtifactRepositoryImpl: ArtifactRepositoryCustom {
     override fun addPhoto(artifactId: UUID, photo: ArtifactPhoto): Boolean {
         val artifact = manager.find(Artifact::class.java, artifactId) ?: return false
         artifact.photos += photo
+        photo.artifact = artifact
         manager.flush()
         return true
     }

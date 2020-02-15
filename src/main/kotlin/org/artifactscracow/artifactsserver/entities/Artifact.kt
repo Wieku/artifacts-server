@@ -27,5 +27,14 @@ class Artifact {
     val lastEdit: LocalDateTime? = null
 
     @OneToMany(mappedBy = "artifact", cascade = [CascadeType.ALL])
+    @OrderBy("timestamp ASC")
     val photos: MutableList<ArtifactPhoto> = ArrayList()
+
+    fun getArchival(): ArtifactPhoto? {
+        return photos.lastOrNull { it.isArchival }
+    }
+
+    fun getThreeNewest(): List<ArtifactPhoto> {
+        return photos.filter { !it.isArchival }.takeLast(3)
+    }
 }
