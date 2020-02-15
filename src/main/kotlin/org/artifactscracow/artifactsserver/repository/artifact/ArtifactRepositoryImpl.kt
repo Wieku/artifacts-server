@@ -2,6 +2,7 @@ package org.artifactscracow.artifactsserver.repository.artifact;
 
 import org.artifactscracow.artifactsserver.entities.Artifact
 import org.artifactscracow.artifactsserver.entities.ArtifactChangeRequest
+import org.artifactscracow.artifactsserver.entities.ArtifactPhoto
 import org.artifactscracow.artifactsserver.entities.ArtifactRevision
 import org.artifactscracow.artifactsserver.views.ArtifactAdd
 import org.springframework.data.domain.Pageable
@@ -65,6 +66,14 @@ open class ArtifactRepositoryImpl: ArtifactRepositoryCustom {
 
         manager.remove(artifact.content)
         manager.remove(artifact)
+        manager.flush()
+        return true
+    }
+
+    @Transactional
+    override fun addPhoto(artifactId: UUID, photo: ArtifactPhoto): Boolean {
+        val artifact = manager.find(Artifact::class.java, artifactId) ?: return false
+        artifact.photos += photo
         manager.flush()
         return true
     }

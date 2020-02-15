@@ -1,14 +1,19 @@
 package org.artifactscracow.artifactsserver.controllers
 
+import org.artifactscracow.artifactsserver.entities.ArtifactPhoto
+import org.artifactscracow.artifactsserver.entities.Asset
 import org.artifactscracow.artifactsserver.repository.artifact.ArtifactRepository
+import org.artifactscracow.artifactsserver.repository.asset.AssetRepository
 import org.artifactscracow.artifactsserver.security.SecurityManager
 import org.artifactscracow.artifactsserver.views.ArtifactAdd
 import org.artifactscracow.artifactsserver.views.ArtifactPoint
 import org.artifactscracow.artifactsserver.views.ArtifactView
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -17,6 +22,9 @@ public class ArtifactController {
 
     @Autowired
     private lateinit var repository: ArtifactRepository
+
+    @Autowired
+    private lateinit var assetsRepository: AssetRepository
 
     @Autowired
     private lateinit var security: SecurityManager
@@ -45,5 +53,30 @@ public class ArtifactController {
         return if (repository.removeArtifact(artifactId)) ResponseEntity.noContent().build() else ResponseEntity.notFound().build()
     }
 
+    @PostMapping(value = ["/api/v1/artifacts/by_id/{artifactId}/photo"])
+    fun addArtifactPhoto(@PathVariable artifactId: UUID, @RequestParam("file") file: MultipartFile, @RequestParam(value = "archival", required = false, defaultValue = "false") archival: Boolean, @RequestHeader(value = "Authorization", required = false) token: String?): ResponseEntity<Any> {
+        if (file.contentType != MediaType.IMAGE_PNG_VALUE && file.contentType != MediaType.IMAGE_JPEG_VALUE) return ResponseEntity(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+        if (file.size > 5242880) return ResponseEntity(HttpStatus.PAYLOAD_TOO_LARGE)
+
+        if (archival && (token == null || !security.isAuthenticated(token))) return ResponseEntity(HttpStatus.FORBIDDEN)
+
+        if (!repository.existsById(artifactId)) return ResponseEntity.notFound().build()
+
+        val name = UUID.randomUUID().toString().replace("-", "") + "." + file.originalFilename!!.substringAfterLast(".")
+
+        val asset = Asset()
+        asset.name = name
+        asset.mime = file.contentType!!
+        asset.data = file.bytes
+        assetsRepository.saveAndFlush(asset)
+
+        val photo = ArtifactPhoto()
+        photo.imageName = name
+        photo.isArchival = archival
+
+        repository.addPhoto(artifactId, photo)
+
+        return ResponseEntity.noContent().build()
+    }
 
 }

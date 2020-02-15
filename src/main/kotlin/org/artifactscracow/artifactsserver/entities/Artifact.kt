@@ -26,4 +26,6 @@ class Artifact {
 
     val lastEdit: LocalDateTime? = null
 
+    @OneToMany(mappedBy = "artifact", cascade = [CascadeType.ALL])
+    val photos: MutableList<ArtifactPhoto> = ArrayList()
 }
