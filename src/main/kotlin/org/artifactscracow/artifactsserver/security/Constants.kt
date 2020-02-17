@@ -1,4 +1,4 @@
 package org.artifactscracow.artifactsserver.security
 
-const val PBKDF2Secret = ""
-const val JWTSecret = ""
+const val PBKDF2Secret = "GFEYFGIFUut47iwseyfhuhGYLNQFGRJHiuhIu4ggYYGRJYRGFURf7uguy"
+const val JWTSecret = "t8y7teiyfhetMZXe47cte74tie7hftjveiec7muevtehtye7teGOkYIHFIURH7436gfFDFBJyuh"
