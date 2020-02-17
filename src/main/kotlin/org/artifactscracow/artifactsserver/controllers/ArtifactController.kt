@@ -8,17 +8,18 @@ import org.artifactscracow.artifactsserver.security.SecurityManager
 import org.artifactscracow.artifactsserver.views.ArtifactAdd
 import org.artifactscracow.artifactsserver.views.ArtifactPoint
 import org.artifactscracow.artifactsserver.views.ArtifactView
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.UUID
+import java.util.stream.Collectors
 
 @RestController
-public class ArtifactController {
+class ArtifactController {
 
     @Autowired
     private lateinit var repository: ArtifactRepository
@@ -28,6 +29,12 @@ public class ArtifactController {
 
     @Autowired
     private lateinit var security: SecurityManager
+
+    @GetMapping(value = ["/api/v1/artifacts"])
+    fun getArtifacts(@RequestParam(value = "page") page: Int, @RequestParam(value = "size") size: Int): ResponseEntity<Any> {
+        val artifacts = repository.findAllByContentNotNullOrderByTimestampDesc(PageRequest.of(page, size))
+        return ResponseEntity.ok(artifacts.content.map { ArtifactView(it) })
+    }
 
     @GetMapping(value = ["/api/v1/artifacts/in_area"])
     fun getArtifacts(@RequestParam(value = "lat1") lat1: Double, @RequestParam(value = "lon1") lon1: Double, @RequestParam(value = "lat2") lat2: Double, @RequestParam(value = "lon2") lon2: Double): ResponseEntity<Any> {
