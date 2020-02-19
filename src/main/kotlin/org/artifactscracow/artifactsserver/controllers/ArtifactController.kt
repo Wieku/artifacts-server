@@ -41,7 +41,7 @@ class ArtifactController {
 
     @GetMapping(value = ["/api/v1/artifacts/in_area"])
     fun getArtifacts(@RequestParam(value = "lat1") lat1: Double, @RequestParam(value = "lon1") lon1: Double, @RequestParam(value = "lat2") lat2: Double, @RequestParam(value = "lon2") lon2: Double): ResponseEntity<Any> {
-        val artifacts = repository.getInArea(lat1, lon1, lat2, lon2).stream().map { artifact -> ArtifactPoint(artifact.id, artifact.latitude, artifact.longitude) }.collect(Collectors.toList())
+        val artifacts = repository.getInArea(lat1, lon1, lat2, lon2).stream().map { artifact -> ArtifactPoint(artifact.id, artifact.latitude, artifact.longitude, artifact.content!!.type) }.collect(Collectors.toList())
         return ResponseEntity.ok(artifacts)
     }
 
