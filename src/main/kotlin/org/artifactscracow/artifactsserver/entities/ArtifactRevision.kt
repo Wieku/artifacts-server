@@ -20,6 +20,7 @@ class ArtifactRevision {
     var street: String = ""
     var building: String = ""
 
+    var name: String? = ""
     var type: String = ""
     var description: String = ""
 
