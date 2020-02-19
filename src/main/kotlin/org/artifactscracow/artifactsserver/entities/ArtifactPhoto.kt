@@ -2,11 +2,9 @@ package org.artifactscracow.artifactsserver.entities
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
-import org.hibernate.annotations.Type
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
-import kotlin.jvm.Transient
 
 
 @Entity(name = "ArtifactPhoto")

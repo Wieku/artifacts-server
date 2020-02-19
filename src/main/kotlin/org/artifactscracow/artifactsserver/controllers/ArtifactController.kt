@@ -30,9 +30,12 @@ class ArtifactController {
     @Autowired
     private lateinit var security: SecurityManager
 
+    @GetMapping(value = ["/api/v1/artifacts/count"])
+    fun getCount() = ResponseEntity.ok(repository.countAllByContentNotNull())
+
     @GetMapping(value = ["/api/v1/artifacts"])
-    fun getArtifacts(@RequestParam(value = "page") page: Int, @RequestParam(value = "size") size: Int): ResponseEntity<Any> {
-        val artifacts = repository.findAllByContentNotNullOrderByTimestampDesc(PageRequest.of(page, size))
+    fun getArtifacts(@RequestParam(value = "page", required = false) page: Int?, @RequestParam(value = "size", required = false) size: Int?): ResponseEntity<Any> {
+        val artifacts = repository.findAllByContentNotNullOrderByTimestampDesc(PageRequest.of(page ?: 0, size ?: 10))
         return ResponseEntity.ok(artifacts.content.map { ArtifactView(it) })
     }
 
