@@ -7,6 +7,6 @@ import org.springframework.data.repository.PagingAndSortingRepository
 import java.util.*
 
 internal interface ArtifactRepository : PagingAndSortingRepository<Artifact, UUID>, ArtifactRepositoryCustom {
-    fun findAllByContentNotNullOrderByTimestampDesc(pagination: Pageable): Page<Artifact>
+    fun findAllByContentNotNullOrderByCreatedAtDesc(pagination: Pageable): Page<Artifact>
     fun countAllByContentNotNull(): Int
 }

@@ -10,11 +10,13 @@ import org.artifactscracow.artifactsserver.views.ArtifactPoint
 import org.artifactscracow.artifactsserver.views.ArtifactView
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.net.URI
 import java.util.UUID
 import java.util.stream.Collectors
 
@@ -35,7 +37,7 @@ class ArtifactController {
 
     @GetMapping(value = ["/api/v1/artifacts"])
     fun getArtifacts(@RequestParam(value = "page", required = false) page: Int?, @RequestParam(value = "size", required = false) size: Int?): ResponseEntity<Any> {
-        val artifacts = repository.findAllByContentNotNullOrderByTimestampDesc(PageRequest.of(page ?: 0, size ?: 10))
+        val artifacts = repository.findAllByContentNotNullOrderByCreatedAtDesc(PageRequest.of(page ?: 0, size ?: 10))
         return ResponseEntity.ok(artifacts.content.map { ArtifactView(it) })
     }
 
@@ -47,15 +49,15 @@ class ArtifactController {
 
     @GetMapping(value = ["/api/v1/artifacts/by_id/{artifactId}"])
     fun getArtifact(@PathVariable artifactId: UUID): ResponseEntity<Any> {
-        val artifact = repository.getArtifact(artifactId)
+        val artifact = repository.findByIdOrNull(artifactId)
         return if (artifact == null) ResponseEntity.notFound().build() else ResponseEntity.ok(ArtifactView(artifact))
     }
 
     @PostMapping(value = ["/api/v1/artifacts"])
     fun addArtifact(@RequestBody(required = true) artifactBody: ArtifactAdd, @RequestHeader(value = "Authorization") token: String): ResponseEntity<Any> {
         if(!security.isAuthenticated(token)) return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        repository.addArtifact(artifactBody)
-        return ResponseEntity.noContent().build()
+        val artifact = repository.addArtifact(artifactBody, security.getUserFromToken(token)!!)
+        return ResponseEntity.created(URI.create("/api/v1/artifacts/by_id/${artifact.id}")).body(ArtifactView(artifact))
     }
 
     @DeleteMapping(value = ["/api/v1/artifacts/by_id/{artifactId}"])

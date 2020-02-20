@@ -1,9 +1,6 @@
 package org.artifactscracow.artifactsserver.repository.artifact;
 
-import org.artifactscracow.artifactsserver.entities.Artifact
-import org.artifactscracow.artifactsserver.entities.ArtifactChangeRequest
-import org.artifactscracow.artifactsserver.entities.ArtifactPhoto
-import org.artifactscracow.artifactsserver.entities.ArtifactRevision
+import org.artifactscracow.artifactsserver.entities.*
 import org.artifactscracow.artifactsserver.views.ArtifactAdd
 import java.util.*
 import javax.persistence.EntityManager
@@ -20,8 +17,6 @@ open class ArtifactRepositoryImpl : ArtifactRepositoryCustom {
         return notes as List<Artifact>
     }
 
-    override fun getArtifact(artifactId: UUID): Artifact? = manager.find(Artifact::class.java, artifactId)
-
     @Transactional
     override fun updateArtifact(artifactId: UUID, revision: ArtifactRevision): Boolean {
         val artifact = manager.find(Artifact::class.java, artifactId) ?: return false
@@ -33,8 +28,10 @@ open class ArtifactRepositoryImpl : ArtifactRepositoryCustom {
     }
 
     @Transactional
-    override fun addArtifact(details: ArtifactAdd): Artifact {
+    override fun addArtifact(details: ArtifactAdd, user: User): Artifact {
         val artifact = Artifact()
+        artifact.createdBy = user
+        artifact.content.editedBy = user
         artifact.content.latitude = details.latitude
         artifact.content.longitude = details.longitude
         artifact.content.street = details.street
