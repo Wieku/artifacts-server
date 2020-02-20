@@ -46,6 +46,7 @@ open class ArtifactRepositoryImpl: ArtifactRepositoryCustom {
         val revision = ArtifactRevision()
         revision.street = details.street
         revision.building = details.building
+        revision.name = details.name
         revision.type = details.type
         revision.description = details.description
 
