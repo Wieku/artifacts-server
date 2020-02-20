@@ -15,10 +15,6 @@ class Artifact {
     @GeneratedValue
     lateinit var id: UUID
 
-    var latitude: Double = 0.0
-
-    var longitude: Double = 0.0
-
     @CreationTimestamp
     lateinit var timestamp: LocalDateTime
 

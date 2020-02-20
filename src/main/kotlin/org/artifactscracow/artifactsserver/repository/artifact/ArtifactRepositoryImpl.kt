@@ -35,8 +35,8 @@ open class ArtifactRepositoryImpl : ArtifactRepositoryCustom {
     @Transactional
     override fun addArtifact(details: ArtifactAdd): Artifact {
         val artifact = Artifact()
-        artifact.latitude = details.latitude
-        artifact.longitude = details.longitude
+        artifact.content.latitude = details.latitude
+        artifact.content.longitude = details.longitude
         artifact.content.street = details.street
         artifact.content.building = details.building
         artifact.content.name = details.name
