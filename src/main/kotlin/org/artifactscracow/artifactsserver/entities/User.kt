@@ -1,6 +1,5 @@
 package org.artifactscracow.artifactsserver.entities
 
-import org.hibernate.annotations.Type
 import java.util.*
 import javax.persistence.*
 
@@ -20,6 +19,6 @@ class User {
 
     var loginToken: UUID = UUID.randomUUID()
 
-    @ManyToOne()
+    @ManyToOne
     lateinit var role: UserRole
 }

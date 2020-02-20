@@ -1,9 +1,7 @@
 package org.artifactscracow.artifactsserver.entities
 
 import org.hibernate.annotations.Type
-import java.util.*
 import javax.persistence.*
-
 
 @Entity(name = "Asset")
 @Table(name = "assets")

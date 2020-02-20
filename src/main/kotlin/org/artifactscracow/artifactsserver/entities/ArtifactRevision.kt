@@ -18,10 +18,12 @@ class ArtifactRevision {
         private set
 
     var street: String = ""
+
     var building: String = ""
 
     var name: String? = ""
-    var type: String = ""
-    var description: String = ""
 
+    var type: String = ""
+
+    var description: String = ""
 }

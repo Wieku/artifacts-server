@@ -5,27 +5,22 @@ import org.artifactscracow.artifactsserver.entities.ArtifactChangeRequest
 import org.artifactscracow.artifactsserver.entities.ArtifactPhoto
 import org.artifactscracow.artifactsserver.entities.ArtifactRevision
 import org.artifactscracow.artifactsserver.views.ArtifactAdd
-import org.springframework.data.domain.Pageable
 import java.util.*
-import java.util.stream.Collectors
 import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
+import javax.persistence.PersistenceContext
+import javax.transaction.Transactional
 
-open class ArtifactRepositoryImpl: ArtifactRepositoryCustom {
+open class ArtifactRepositoryImpl : ArtifactRepositoryCustom {
 
     @PersistenceContext
     private lateinit var manager: EntityManager
 
     override fun getInArea(lat1: Double, lon1: Double, lat2: Double, lon2: Double): List<Artifact> {
-        val notes = manager.createQuery("SELECT a FROM ${Artifact::class.java.name} a WHERE a.content IS NOT NULL AND a.latitude >= $lat1 AND a.latitude <= $lat2 AND a.longitude >= $lon1 AND a.longitude <= $lon2").resultList
+        val notes = manager.createQuery("SELECT a FROM ${Artifact::class.java.name} a WHERE a.latitude >= $lat1 AND a.latitude <= $lat2 AND a.longitude >= $lon1 AND a.longitude <= $lon2").resultList
         return notes as List<Artifact>
     }
 
-    override fun getArtifact(artifactId: UUID): Artifact? {
-        val artifact = manager.find(Artifact::class.java, artifactId)
-        return if (artifact?.content != null) artifact else null
-    }
+    override fun getArtifact(artifactId: UUID): Artifact? = manager.find(Artifact::class.java, artifactId)
 
     @Transactional
     override fun updateArtifact(artifactId: UUID, revision: ArtifactRevision): Boolean {
@@ -38,22 +33,19 @@ open class ArtifactRepositoryImpl: ArtifactRepositoryCustom {
     }
 
     @Transactional
-    override fun addArtifact(details: ArtifactAdd) {
+    override fun addArtifact(details: ArtifactAdd): Artifact {
         val artifact = Artifact()
         artifact.latitude = details.latitude
         artifact.longitude = details.longitude
+        artifact.content.street = details.street
+        artifact.content.building = details.building
+        artifact.content.name = details.name
+        artifact.content.type = details.type
+        artifact.content.description = details.description
 
-        val revision = ArtifactRevision()
-        revision.street = details.street
-        revision.building = details.building
-        revision.name = details.name
-        revision.type = details.type
-        revision.description = details.description
-
-        artifact.content = revision
         manager.persist(artifact)
-
         manager.flush()
+        return artifact
     }
 
     @Transactional

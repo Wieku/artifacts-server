@@ -16,25 +16,20 @@ class Artifact {
     lateinit var id: UUID
 
     var latitude: Double = 0.0
+
     var longitude: Double = 0.0
 
     @CreationTimestamp
     lateinit var timestamp: LocalDateTime
 
-    @OneToOne(cascade= [CascadeType.ALL])
-    var content: ArtifactRevision? = null
-
-    val lastEdit: LocalDateTime? = null
+    @OneToOne(cascade = [CascadeType.ALL])
+    var content = ArtifactRevision()
 
     @OneToMany(mappedBy = "artifact", cascade = [CascadeType.ALL])
     @OrderBy("timestamp ASC")
     val photos: MutableList<ArtifactPhoto> = ArrayList()
 
-    fun getArchival(): ArtifactPhoto? {
-        return photos.lastOrNull { it.isArchival }
-    }
+    fun getArchival() = photos.lastOrNull { it.isArchival }
 
-    fun getThreeNewest(): List<ArtifactPhoto> {
-        return photos.filter { !it.isArchival }.takeLast(3)
-    }
+    fun getThreeNewest() = photos.filter { !it.isArchival }.takeLast(3)
 }
