@@ -25,7 +25,7 @@ class ArtifactRevision {
 
     var building: String = ""
 
-    var name: String? = ""
+    var name: String = ""
 
     var type: String = ""
 
