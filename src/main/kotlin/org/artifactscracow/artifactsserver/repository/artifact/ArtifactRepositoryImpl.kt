@@ -38,7 +38,7 @@ open class ArtifactRepositoryImpl: ArtifactRepositoryCustom {
     }
 
     @Transactional
-    override fun addArtifact(details: ArtifactAdd, addImmediately: Boolean) {
+    override fun addArtifact(details: ArtifactAdd) {
         val artifact = Artifact()
         artifact.latitude = details.latitude
         artifact.longitude = details.longitude
@@ -50,13 +50,8 @@ open class ArtifactRepositoryImpl: ArtifactRepositoryCustom {
         revision.type = details.type
         revision.description = details.description
 
-        if (addImmediately) {
-            artifact.content = revision
-            manager.persist(artifact)
-        } else {
-            val changeRequest = ArtifactChangeRequest(artifact, revision)
-            manager.persist(changeRequest)
-        }
+        artifact.content = revision
+        manager.persist(artifact)
 
         manager.flush()
     }

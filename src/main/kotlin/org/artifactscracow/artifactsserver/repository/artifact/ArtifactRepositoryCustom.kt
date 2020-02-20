@@ -10,7 +10,7 @@ import java.util.*
 interface ArtifactRepositoryCustom {
     fun getInArea(lat1: Double, lon1: Double, lat2: Double, lon2: Double): List<Artifact>
     fun getArtifact(artifactId: UUID): Artifact?
-    fun addArtifact(details: ArtifactAdd, addImmediately: Boolean)
+    fun addArtifact(details: ArtifactAdd)
     fun updateArtifact(artifactId: UUID, revision: ArtifactRevision): Boolean
     fun removeArtifact(artifactId: UUID): Boolean
     fun addPhoto(artifactId: UUID, photo: ArtifactPhoto): Boolean

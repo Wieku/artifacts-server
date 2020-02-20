@@ -52,8 +52,9 @@ class ArtifactController {
     }
 
     @PostMapping(value = ["/api/v1/artifacts"])
-    fun addArtifact(@RequestBody(required = true) artifactBody: ArtifactAdd, @RequestHeader(value = "Authorization", required = false) token: String?): ResponseEntity<Any> {
-        repository.addArtifact(artifactBody, token != null && security.isAuthenticated(token))
+    fun addArtifact(@RequestBody(required = true) artifactBody: ArtifactAdd, @RequestHeader(value = "Authorization") token: String): ResponseEntity<Any> {
+        if(!security.isAuthenticated(token)) return ResponseEntity(HttpStatus.UNAUTHORIZED)
+        repository.addArtifact(artifactBody)
         return ResponseEntity.noContent().build()
     }
 
