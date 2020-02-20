@@ -16,13 +16,13 @@ class Artifact {
     lateinit var id: UUID
 
     @CreationTimestamp
-    lateinit var timestamp: LocalDateTime
+    lateinit var createdAt: LocalDateTime
 
     @OneToOne(cascade = [CascadeType.ALL])
     var content = ArtifactRevision()
 
-    @OneToMany(mappedBy = "artifact", cascade = [CascadeType.ALL])
-    @OrderBy("timestamp ASC")
+    @OneToMany(mappedBy = "createdAt", cascade = [CascadeType.ALL])
+    @OrderBy("createdAt ASC")
     val photos: MutableList<ArtifactPhoto> = ArrayList()
 
     fun getArchival() = photos.lastOrNull { it.isArchival }

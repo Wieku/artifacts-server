@@ -22,7 +22,7 @@ class ArtifactPhoto {
     lateinit var artifact: Artifact
 
     @CreationTimestamp
-    lateinit var timestamp: LocalDateTime
+    lateinit var createdAt: LocalDateTime
 
     var isArchival: Boolean = false
 

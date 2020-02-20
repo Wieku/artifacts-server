@@ -14,7 +14,7 @@ class ArtifactRevision {
     private lateinit var id: UUID
 
     @CreationTimestamp
-    var creationDate: LocalDateTime? = null
+    var editedAt: LocalDateTime? = null
         private set
 
     var latitude: Double = 0.0
