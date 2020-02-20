@@ -17,6 +17,10 @@ class ArtifactRevision {
     var creationDate: LocalDateTime? = null
         private set
 
+    var latitude: Double = 0.0
+
+    var longitude: Double = 0.0
+
     var street: String = ""
 
     var building: String = ""
