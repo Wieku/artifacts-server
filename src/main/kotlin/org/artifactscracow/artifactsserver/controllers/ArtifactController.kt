@@ -33,33 +33,33 @@ class ArtifactController {
     @Autowired
     private lateinit var security: SecurityManager
 
-    @GetMapping(value = ["/api/v1/artifacts"])
-    fun getArtifacts(@RequestParam(value = "page", required = false) page: Int?, @RequestParam(value = "size", required = false) size: Int?): ResponseEntity<Any> {
-        val artifacts = repository.findAllByContentNotNullOrderByCreatedAtDesc(PageRequest.of(page ?: 0, size ?: 10))
+    @GetMapping("/api/v1/artifacts")
+    fun getArtifacts(@RequestParam(required = false) page: Int?, @RequestParam(required = false) size: Int?): ResponseEntity<Any> {
+        val artifacts = repository.findAllByOrderByCreatedAtDesc(PageRequest.of(page ?: 0, size ?: 10))
         return ResponseEntity.ok(artifacts.map { ArtifactView(it) })
     }
 
-    @GetMapping(value = ["/api/v1/artifacts/in_area"])
-    fun getArtifacts(@RequestParam(value = "lat1") lat1: Double, @RequestParam(value = "lon1") lon1: Double, @RequestParam(value = "lat2") lat2: Double, @RequestParam(value = "lon2") lon2: Double): ResponseEntity<Any> {
+    @GetMapping("/api/v1/artifacts/in_area")
+    fun getArtifacts(@RequestParam lat1: Double, @RequestParam lon1: Double, @RequestParam lat2: Double, @RequestParam lon2: Double): ResponseEntity<Any> {
         val artifacts = repository.getInArea(lat1, lon1, lat2, lon2).stream().map { artifact -> ArtifactPoint(artifact.id, artifact.content.latitude, artifact.content.longitude, artifact.content!!.type) }.collect(Collectors.toList())
         return ResponseEntity.ok(artifacts)
     }
 
-    @GetMapping(value = ["/api/v1/artifacts/by_id/{artifactId}"])
+    @GetMapping("/api/v1/artifacts/by_id/{artifactId}")
     fun getArtifact(@PathVariable artifactId: UUID): ResponseEntity<Any> {
         val artifact = repository.findByIdOrNull(artifactId)
         return if (artifact == null) ResponseEntity.notFound().build() else ResponseEntity.ok(ArtifactView(artifact))
     }
 
-    @PostMapping(value = ["/api/v1/artifacts"])
-    fun addArtifact(@RequestBody(required = true) artifactBody: ArtifactAdd, @RequestHeader(value = "Authorization") token: String): ResponseEntity<Any> {
+    @PostMapping("/api/v1/artifacts")
+    fun addArtifact(@RequestBody artifactBody: ArtifactAdd, @RequestHeader(value = "Authorization") token: String): ResponseEntity<Any> {
         if(!security.isAuthenticated(token)) return ResponseEntity(HttpStatus.UNAUTHORIZED)
         val artifact = repository.addArtifact(artifactBody, security.getUserFromToken(token)!!)
         return ResponseEntity.created(URI.create("/api/v1/artifacts/by_id/${artifact.id}")).body(ArtifactView(artifact))
     }
 
-    @PutMapping(value = ["/api/v1/artifacts/by_id/{artifactId}"])
-    fun updateArtifact(@PathVariable artifactId: UUID, @RequestBody(required = true) artifactBody: ArtifactAdd, @RequestHeader(value = "Authorization") token: String): ResponseEntity<Any> {
+    @PutMapping("/api/v1/artifacts/by_id/{artifactId}")
+    fun updateArtifact(@PathVariable artifactId: UUID, @RequestBody artifactBody: ArtifactAdd, @RequestHeader(value = "Authorization") token: String): ResponseEntity<Any> {
         if(!security.isAuthenticated(token)) return ResponseEntity(HttpStatus.UNAUTHORIZED)
         var artifact = repository.findByIdOrNull(artifactId) ?: ResponseEntity.notFound()
         val user = security.getUserFromToken(token)!!
@@ -68,7 +68,7 @@ class ArtifactController {
         return ResponseEntity.ok(ArtifactView(artifact))
     }
 
-    @DeleteMapping(value = ["/api/v1/artifacts/by_id/{artifactId}"])
+    @DeleteMapping("/api/v1/artifacts/by_id/{artifactId}")
     fun removeArtifact(@PathVariable artifactId: UUID, @RequestHeader(value = "Authorization") token: String): ResponseEntity<Any> {
         if (!security.isAuthenticated(token)) return ResponseEntity(HttpStatus.UNAUTHORIZED)
         val artifact = repository.findByIdOrNull(artifactId) ?: ResponseEntity.notFound()
@@ -77,8 +77,8 @@ class ArtifactController {
         return if (repository.removeArtifact(artifactId)) ResponseEntity.noContent().build() else ResponseEntity.notFound().build()
     }
 
-    @PostMapping(value = ["/api/v1/artifacts/by_id/{artifactId}/photo"])
-    fun addArtifactPhoto(@PathVariable artifactId: UUID, @RequestParam("file") file: MultipartFile, @RequestParam(value = "archival", required = false, defaultValue = "false") archival: Boolean, @RequestHeader(value = "Authorization", required = false) token: String?): ResponseEntity<Any> {
+    @PostMapping("/api/v1/artifacts/by_id/{artifactId}/photo")
+    fun addArtifactPhoto(@PathVariable artifactId: UUID, @RequestParam file: MultipartFile, @RequestParam(required = false, defaultValue = "false") archival: Boolean, @RequestHeader(value = "Authorization", required = false) token: String?): ResponseEntity<Any> {
         if (file.contentType != MediaType.IMAGE_PNG_VALUE && file.contentType != MediaType.IMAGE_JPEG_VALUE) return ResponseEntity(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
         if (file.size > 5242880) return ResponseEntity(HttpStatus.PAYLOAD_TOO_LARGE)
 

@@ -15,8 +15,8 @@ class SearchController {
     @Autowired
     private lateinit var repository: ArtifactRepository
 
-    @GetMapping(value = ["/api/v1/artifacts/search"])
-    fun searchArtifacts(@RequestParam(value = "name", required = false) name: String?, @RequestParam(value = "type", required = false) type: String?, @RequestParam(value = "street", required = false) street: String?, @RequestParam(value = "building", required = false) building: String?, @RequestParam(value = "page", required = false) page: Int?, @RequestParam(value = "size", required = false) size: Int?): ResponseEntity<Any> {
+    @GetMapping("/api/v1/artifacts/search")
+    fun searchArtifacts(@RequestParam(required = false) name: String?, @RequestParam(required = false) type: String?, @RequestParam(required = false) street: String?, @RequestParam(required = false) building: String?, @RequestParam(required = false) page: Int?, @RequestParam(required = false) size: Int?): ResponseEntity<Any> {
         if (name.isNullOrBlank() && type.isNullOrBlank() && street.isNullOrBlank() && building.isNullOrBlank())
             return ResponseEntity.badRequest().build()
         val artifacts = repository.findAllByContent_NameContainsAndContent_TypeContainsAndContent_StreetContainsAndContent_BuildingContainsOrderByContent_EditedAtDesc(
