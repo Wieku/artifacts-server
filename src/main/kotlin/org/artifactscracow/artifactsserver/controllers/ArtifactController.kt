@@ -1,5 +1,6 @@
 package org.artifactscracow.artifactsserver.controllers
 
+import org.artifactscracow.artifactsserver.entities.Artifact
 import org.artifactscracow.artifactsserver.entities.ArtifactPhoto
 import org.artifactscracow.artifactsserver.entities.Asset
 import org.artifactscracow.artifactsserver.repository.artifact.ArtifactRepository
@@ -60,9 +61,22 @@ class ArtifactController {
         return ResponseEntity.created(URI.create("/api/v1/artifacts/by_id/${artifact.id}")).body(ArtifactView(artifact))
     }
 
+    @PutMapping(value = ["/api/v1/artifacts/by_id/{artifactId}"])
+    fun updateArtifact(@PathVariable artifactId: UUID, @RequestBody(required = true) artifactBody: ArtifactAdd, @RequestHeader(value = "Authorization") token: String): ResponseEntity<Any> {
+        if(!security.isAuthenticated(token)) return ResponseEntity(HttpStatus.UNAUTHORIZED)
+        var artifact = repository.findByIdOrNull(artifactId) ?: ResponseEntity.notFound()
+        val user = security.getUserFromToken(token)!!
+        if ((artifact as Artifact).createdBy.id != user.id) return ResponseEntity(HttpStatus.FORBIDDEN)
+        artifact = repository.updateArtifact(artifactId, artifactBody, user)
+        return ResponseEntity.ok(ArtifactView(artifact))
+    }
+
     @DeleteMapping(value = ["/api/v1/artifacts/by_id/{artifactId}"])
     fun removeArtifact(@PathVariable artifactId: UUID, @RequestHeader(value = "Authorization") token: String): ResponseEntity<Any> {
         if (!security.isAuthenticated(token)) return ResponseEntity(HttpStatus.UNAUTHORIZED)
+        val artifact = repository.findByIdOrNull(artifactId) ?: ResponseEntity.notFound()
+        val user = security.getUserFromToken(token)!!
+        if ((artifact as Artifact).createdBy.id != user.id) return ResponseEntity(HttpStatus.FORBIDDEN)
         return if (repository.removeArtifact(artifactId)) ResponseEntity.noContent().build() else ResponseEntity.notFound().build()
     }
 

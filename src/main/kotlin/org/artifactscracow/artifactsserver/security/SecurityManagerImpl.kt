@@ -17,6 +17,11 @@ class SecurityManagerImpl: SecurityManager {
         return user.id == user1.id && user.loginToken == user1.loginToken
     }
 
-    override fun getUserFromToken(token: String): User? = JWTHelper.extractToken(token)
+    override fun getUserFromToken(token: String): User? {
+        val potentialUser = JWTHelper.extractToken(token) ?: return null
+        val user1 = repository.findByEmail(potentialUser.email) ?: return null
+        potentialUser.name = user1.name
+        return potentialUser
+    }
 
 }

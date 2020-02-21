@@ -18,13 +18,20 @@ open class ArtifactRepositoryImpl : ArtifactRepositoryCustom {
     }
 
     @Transactional
-    override fun updateArtifact(artifactId: UUID, revision: ArtifactRevision): Boolean {
-        val artifact = manager.find(Artifact::class.java, artifactId) ?: return false
+    override fun updateArtifact(artifactId: UUID, details: ArtifactAdd, user: User): Artifact {
+        val artifact = manager.find(Artifact::class.java, artifactId)
 
-        val changeRequest = ArtifactChangeRequest(artifact, revision)
-        manager.persist(changeRequest)
+        artifact.content = ArtifactRevision()
+        artifact.content.editedBy = user
+        artifact.content.latitude = details.latitude
+        artifact.content.longitude = details.longitude
+        artifact.content.street = details.street
+        artifact.content.building = details.building
+        artifact.content.name = details.name
+        artifact.content.type = details.type
+        artifact.content.description = details.description
         manager.flush()
-        return true
+        return artifact
     }
 
     @Transactional
