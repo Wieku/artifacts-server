@@ -8,5 +8,6 @@ import java.util.*
 
 internal interface ArtifactRepository : PagingAndSortingRepository<Artifact, UUID>, ArtifactRepositoryCustom {
     fun findAllByContentNotNullOrderByCreatedAtDesc(pagination: Pageable): Page<Artifact>
+    fun findAllByContent_StreetContainsAndContent_BuildingContains(street: String, building: String): List<Artifact>
     fun countAllByContentNotNull(): Int
 }
