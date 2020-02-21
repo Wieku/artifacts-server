@@ -14,9 +14,12 @@ class SearchController {
     @Autowired
     private lateinit var repository: ArtifactRepository
 
-    @GetMapping(value = ["/api/v1/artifacts/search/by_address"])
-    fun searchArtifacts(@RequestParam(value = "street") street: String, @RequestParam(value = "building", required = false) building: String?): ResponseEntity<Any> {
-        val artifacts = repository.findAllByContent_StreetContainsAndContent_BuildingContains(street, building ?: "")
+    @GetMapping(value = ["/api/v1/artifacts/search"])
+    fun searchArtifacts(@RequestParam(value = "name", required = false) name: String?, @RequestParam(value = "type", required = false) type: String?, @RequestParam(value = "street", required = false) street: String?, @RequestParam(value = "building", required = false) building: String?): ResponseEntity<Any> {
+        if (name.isNullOrBlank() && type.isNullOrBlank() && street.isNullOrBlank() && building.isNullOrBlank())
+            return ResponseEntity.badRequest().build()
+        val artifacts = repository.findAllByContent_NameContainsAndContent_TypeContainsAndContent_StreetContainsAndContent_BuildingContains(
+                name ?: "", type ?: "", street ?: "", building ?: "")
         return ResponseEntity.ok(artifacts.map { ArtifactView(it) })
     }
 
