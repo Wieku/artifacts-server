@@ -9,7 +9,6 @@ import org.artifactscracow.artifactsserver.views.ArtifactView
 import java.util.*
 
 interface ArtifactRepositoryCustom {
-    fun getInArea(lat1: Double, lon1: Double, lat2: Double, lon2: Double): List<Artifact>
     fun addArtifact(details: ArtifactAdd, user: User): Artifact
     fun updateArtifact(artifactId: UUID, details: ArtifactAdd, user: User): Artifact
     fun removeArtifact(artifactId: UUID): Boolean

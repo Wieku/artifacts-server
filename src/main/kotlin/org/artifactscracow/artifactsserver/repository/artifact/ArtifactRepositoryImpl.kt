@@ -12,11 +12,6 @@ open class ArtifactRepositoryImpl : ArtifactRepositoryCustom {
     @PersistenceContext
     private lateinit var manager: EntityManager
 
-    override fun getInArea(lat1: Double, lon1: Double, lat2: Double, lon2: Double): List<Artifact> {
-        val notes = manager.createQuery("SELECT a FROM ${Artifact::class.java.name} a WHERE a.latitude >= $lat1 AND a.latitude <= $lat2 AND a.longitude >= $lon1 AND a.longitude <= $lon2").resultList
-        return notes as List<Artifact>
-    }
-
     @Transactional
     override fun updateArtifact(artifactId: UUID, details: ArtifactAdd, user: User): Artifact {
         val artifact = manager.find(Artifact::class.java, artifactId)
