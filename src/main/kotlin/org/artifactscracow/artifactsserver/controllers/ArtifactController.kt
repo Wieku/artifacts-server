@@ -54,6 +54,7 @@ class ArtifactController {
     @PostMapping("/api/v1/artifacts")
     fun addArtifact(@RequestBody artifactBody: ArtifactAdd, @RequestHeader(value = "Authorization") token: String): ResponseEntity<Any> {
         if(!security.isAuthenticated(token)) return ResponseEntity(HttpStatus.UNAUTHORIZED)
+        if (!artifactBody.validate()) return ResponseEntity.badRequest().build()
         val artifact = repository.addArtifact(artifactBody, security.getUserFromToken(token)!!)
         return ResponseEntity.created(URI.create("/api/v1/artifacts/by_id/${artifact.id}")).body(ArtifactView(artifact))
     }
@@ -64,6 +65,7 @@ class ArtifactController {
         var artifact = repository.findByIdOrNull(artifactId) ?: ResponseEntity.notFound()
         val user = security.getUserFromToken(token)!!
         if ((artifact as Artifact).createdBy.id != user.id) return ResponseEntity(HttpStatus.FORBIDDEN)
+        if (!artifactBody.validate()) return ResponseEntity.badRequest().build()
         artifact = repository.updateArtifact(artifactId, artifactBody, user)
         return ResponseEntity.ok(ArtifactView(artifact))
     }
