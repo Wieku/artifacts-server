@@ -1,6 +1,7 @@
 package org.artifactscracow.artifactsserver.entities
 
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.Type
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
@@ -31,5 +32,7 @@ class ArtifactRevision {
 
     var type: String = ""
 
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
     var description: String = ""
 }
